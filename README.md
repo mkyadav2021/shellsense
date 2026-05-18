@@ -45,7 +45,7 @@ Each command in the pipeline gets its own breakdown.
 You need Python 3.10 or higher.
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/mkyadav2021/shellsense.git
 cd shellsense
 python3 -m venv .venv
 source .venv/bin/activate
