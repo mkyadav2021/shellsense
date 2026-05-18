@@ -82,9 +82,9 @@ source .venv/bin/activate
 Always wrap the command in **single quotes**. Single quotes pass everything inside to ShellSense exactly as written — double quotes, `>`, `*`, and `$` are all preserved:
 
 ```bash
-shellsense 'find . -name "*.log" -mtime +7'   # correct — * and " are safe
-shellsense "find . -name '*.log' -mtime +7"   # also fine — no special chars
-shellsense "echo "hello" > file.txt"           # broken — shell eats the inner "
+shellsense 'ls -la'                  # correct
+shellsense 'grep -rn "error" .'     # correct — inner " are safe inside single quotes
+shellsense "grep -rn "error" ."     # broken — shell eats the inner "
 ```
 
 The only time you can't use single quotes is if the command itself contains a single quote (rare).
