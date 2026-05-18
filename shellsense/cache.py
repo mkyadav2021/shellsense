@@ -1,5 +1,4 @@
 import json
-import os
 import time
 from pathlib import Path
 
@@ -14,7 +13,6 @@ def _cache_path(command: str) -> Path:
 
 
 def get(command: str) -> dict | None:
-    
     path = _cache_path(command)
 
     if not path.exists():
@@ -36,7 +34,6 @@ def get(command: str) -> dict | None:
 
 
 def put(command: str, data: dict) -> None:
-    
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
     data["_cached_at"] = time.time()
@@ -45,7 +42,6 @@ def put(command: str, data: dict) -> None:
 
 
 def clear() -> int:
-    
     if not CACHE_DIR.exists():
         return 0
 

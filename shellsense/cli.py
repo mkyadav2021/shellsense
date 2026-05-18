@@ -15,9 +15,9 @@ Usage:
   shellsense status            Show cache statistics
 
 Examples:
-  shellsense "ls -la /tmp"
-  shellsense "ps aux | grep nginx | head -5"
-  shellsense "git commit -m 'initial'"
+  shellsense 'ls -la /tmp'
+  shellsense 'ps aux | grep nginx | head -5'
+  shellsense 'git commit -m "initial"'
 """
 
 

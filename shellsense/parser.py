@@ -11,20 +11,21 @@ from dataclasses import dataclass, field
 
 @dataclass
 class FlagInfo:
-    flag:str
+    flag: str
     value: str | None
 
     @property
-    def is_long(self)->bool:
+    def is_long(self) -> bool:
         return self.flag.startswith("--")
+
 
 @dataclass
 class CommandSegment:
-    raw:str
-    command:str
-    subcommand:str | None =None
-    args: list[str]=field(default_factory=list)
-    flags: list[FlagInfo]=field(default_factory=list)
+    raw: str
+    command: str
+    subcommand: str | None = None
+    args: list[str] = field(default_factory=list)
+    flags: list[FlagInfo] = field(default_factory=list)
 
 # Redirect operators that consume the next token (the filename)
 REDIRECT_OPS = {'>', '>>', '2>', '2>>', '&>', '&>>', '<', '<<', '<<<'}
@@ -65,17 +66,17 @@ FLAGS_WITH_VALUES={
 }
 
 
-def split_pipeline(command_string: str)->list[str]:
-    segments=[]
-    current=[]
+def split_pipeline(command_string: str) -> list[str]:
+    segments = []
+    current = []
 
     try:
         shlex.split(command_string)
     except ValueError:
         return [s.strip() for s in command_string.split("|")]
 
-    in_single_quote=False
-    in_double_quote=False
+    in_single_quote = False
+    in_double_quote = False
 
     for char in command_string:
         if char == "'" and not in_double_quote:
@@ -96,11 +97,10 @@ def split_pipeline(command_string: str)->list[str]:
     return [s for s in segments if s]
 
 def expand_short_flags(token: str) -> list[str]:
-    
     if token.startswith("--") or len(token) <= 2:
         return [token]
 
-    
+    # don't treat -7 or -42 as flags
     if token[1:].isdigit():
         return [token]
 
@@ -108,7 +108,6 @@ def expand_short_flags(token: str) -> list[str]:
 
 
 def parse_segment(raw: str) -> CommandSegment:
-    
     try:
         tokens = shlex.split(raw)
     except ValueError:

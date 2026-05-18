@@ -6,16 +6,14 @@ from shellsense import knowledge, manpage, tldr, cache
 
 @dataclass
 class FlagExplanation:
-   
     flag: str
     value: str | None
     explanation: str
-    source: str          # Where we found this: "builtin", "man", "tldr"
+    source: str
 
 
 @dataclass
 class CommandExplanation:
-   
     command: str
     subcommand: str | None
     description: str
@@ -144,6 +142,5 @@ def explain_segment(segment: CommandSegment) -> CommandExplanation:
 
 
 def explain(command_string: str) -> list[CommandExplanation]:
-   
     segments = parse_command(command_string)
     return [explain_segment(s) for s in segments]
