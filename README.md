@@ -1,6 +1,7 @@
 # ShellSense
 
-Ever typed a command you copied from the internet and had no idea what half of it does? ShellSense explains it in plain English — flag by flag, piece by piece.
+Shell commands look like someone fell asleep on the keyboard.
+ShellSense translates them into plain English.
 
 ```
 $ shellsense 'tar -czf backup.tar.gz /home/user/documents'
