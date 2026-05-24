@@ -51,6 +51,8 @@ def explain_segment(segment: CommandSegment) -> CommandExplanation:
     flag_db: dict[str, str] = {}
     examples: list[dict] = []
     source = "unknown"
+    
+    resolved = False
 
     # 1. Built-in knowledge base
     kb = knowledge.lookup(command, segment.subcommand)
@@ -58,21 +60,24 @@ def explain_segment(segment: CommandSegment) -> CommandExplanation:
         description = kb["description"]
         flag_db = kb.get("flags", {})
         source = "builtin"
+        if flag_db:
+            resolved = True
 
         if segment.subcommand and "subcommand_description" in kb:
             description += f" → {kb['subcommand_description']}"
 
-    # 2. Check cache (only if builtin didn't have enough info)
-    if not flag_db:
+    # 2. Cache — a hit is the stored result of a prior resolution, so trust it
+    if not resolved:
         cached = cache.get(command)
         if cached:
             description = cached.get("description", description)
             flag_db = cached.get("flags", {})
             examples = cached.get("examples", [])
             source = cached.get("source", "cache")
+            resolved = True
 
     # 3. Man pages
-    if not flag_db:
+    if not resolved:
         man = manpage.parse_man_page(command)
         if man is None:
             # Try shell builtins
@@ -91,8 +96,11 @@ def explain_segment(segment: CommandSegment) -> CommandExplanation:
                 "source": "man",
             })
 
-    # 4. tldr pages — only fetch when we lack flags or a description
-    if source == "unknown" or not flag_db:
+            if flag_db:
+                resolved = True
+
+    # 4. tldr pages — only fetch when nothing has resolved yet
+    if not resolved:
         tldr_data = tldr.get_tldr(command)
         if tldr_data:
             if source == "unknown":
@@ -101,15 +109,16 @@ def explain_segment(segment: CommandSegment) -> CommandExplanation:
 
             if not flag_db:
                 source = "tldr"
-                cache.put(command, {
-                    "description": description,
-                    "flags": {},
-                    "examples": examples,
-                    "source": "tldr",
-                })
+            cache.put(command, {
+                "description": description,
+                "flags": flag_db,
+                "examples": examples,
+                "source": source,
+            })
+            resolved = True
 
     # 5. --help fallback
-    if source == "unknown":
+    if not resolved:
         help_data = _get_help_output(command)
         if help_data:
             description = help_data["description"]
