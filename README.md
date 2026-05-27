@@ -138,7 +138,7 @@ pytest tests/ -v
 
 ## Known limitations
 
-- `ps aux` uses BSD-style flags without a dash — ShellSense sees `aux` as a positional argument rather than flags, so those won't be explained individually. Use `ps -ef` for POSIX-style output.
+<!-- - `ps aux` uses BSD-style flags without a dash — ShellSense sees `aux` as a positional argument rather than flags, so those won't be explained individually. Use `ps -ef` for POSIX-style output. -->
 - The built-in knowledge base covers the most common commands. If a command isn't there, it falls back to man pages and tldr, which may be slower or less precise.
 - tldr pages require an internet connection.
 
